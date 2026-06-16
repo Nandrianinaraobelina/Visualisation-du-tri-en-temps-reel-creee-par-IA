@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Insertion Sort Visualizer</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>INSERTION SORT</h1>
+                <p>
+                    Builds the sorted prefix one item at a time, shifting larger
+                    elements<br />right to make room.
+                </p>
+            </div>
+
+            <div class="complexity-badges">
+                <div class="badge">TIME : O(n²)</div>
+                <div class="badge">SPACE : O(1)</div>
+            </div>
+
+            <div class="control-panel">
+                <div class="control-row">
+                    <div class="input-group">
+                        <label for="arraySize">Array Size</label>
+                        <input
+                            type="number"
+                            id="arraySize"
+                            min="5"
+                            max="15"
+                            value="9"
+                        />
+                    </div>
+                    <button class="button btn-primary" id="generateBtn">
+                        Generate Array
+                    </button>
+                </div>
+
+                <div class="control-row">
+                    <div class="slider-group">
+                        <label for="speedSlider">Animation Speed</label>
+                        <div class="slider-container">
+                            <input
+                                type="range"
+                                id="speedSlider"
+                                min="100"
+                                max="800"
+                                value="400"
+                                step="50"
+                            />
+                            <span class="speed-value" id="speedValue">400ms</span>
+                        </div>
+                    </div>
+                    <button class="button btn-primary" id="startBtn" disabled>
+                        Start Insertion Sort
+                    </button>
+                </div>
+            </div>
+
+            <div class="visualization-section">
+                <div class="visualization-title">Array Visualization</div>
+                <div class="action-message" id="actionMessage"></div>
+                <div class="bars-container">
+                    <div class="bars-wrapper" id="barsContainer"></div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">
+                        Custom Sort Algorithm (JavaScript Async)
+                    </div>
+                    <button
+                        class="button btn-secondary"
+                        id="toggleCustomCodeBtn"
+                    >
+                        Show / Hide Editor
+                    </button>
+                </div>
+                <div class="code-content" id="customCodeContent">
+                    <div class="custom-editor-container">
+                        <div class="editor-info">
+                            <p>
+                                 Écrivez un algorithme asynchrone pour
+                                l'animer en direct !
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.82rem;
+                                    margin-top: 8px;
+                                    color: var(--text-secondary);
+                                "
+                            >
+                                Utilisez
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.compare(i, j)</code
+                                >,
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.swap(i, j)</code
+                                >, et
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.done()</code
+                                >.
+                            </p>
+                        </div>
+                        <textarea
+                            id="customCodeEditor"
+                            class="custom-code-editor"
+                        ></textarea>
+                        <div class="editor-buttons">
+                            <button
+                                class="button btn-primary"
+                                id="testCustomCodeBtn"
+                            >
+                                Run Custom Algorithm
+                            </button>
+                            <button
+                                class="button btn-secondary"
+                                id="resetCodeBtn"
+                            >
+                                Reset to Template
+                            </button>
+                        </div>
+                        <div class="error-message" id="errorMessage"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">Reference Source Code (Python)</div>
+                    <button class="button btn-secondary" id="toggleCodeBtn">
+                        Show / Hide Code
+                    </button>
+                </div>
+                <div class="code-content" id="codeContent">
+                    <div class="code-lines">
+                        <div class="code-line-numbers" id="lineNumbers"></div>
+                        <div class="code-text" id="codeText"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
