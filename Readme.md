@@ -1,4 +1,4 @@
-# Visualisation du Tri en Temps Réel (Créée par IA)
+#  Visualisation du Tri en Temps Réel (Créée par IA)
 
 Une application web interactive permettant de visualiser l'algorithme **Insertion Sort (Tri par Insertion)** étape par étape grâce à des animations en temps réel.
 
@@ -8,19 +8,32 @@ Cette application est idéale pour les étudiants, les débutants en algorithmiq
 
 ##  Fonctionnalités
 
--  Génération automatique d'un tableau aléatoire
--  Choix de la taille du tableau
--  Réglage de la vitesse d'animation
--  Visualisation des comparaisons et déplacements
--  Mise en évidence de la variable `key`
--  Affichage des actions en temps réel
--  Affichage du code source de l'algorithme
--  Interface moderne avec thème sombre
-- Compatible mobile et ordinateur
+*  Génération automatique d'un tableau aléatoire
+*  Choix de la taille du tableau
+ Réglage de la vitesse d'animation
+*  Visualisation des comparaisons et déplacements
+* Mise en évidence de la variable `key`
+*  Affichage des actions en temps réel
+*  Affichage du code source de l'algorithme
+*  Interface moderne avec thème sombre
+*  Compatible mobile et ordinateur
 
 ---
 
 ##  Aperçu
+
+<p align="center">
+  <img src="sary-1.png" width="45%">
+  <img src="sary-2.png" width="45%">
+</p>
+
+<p align="center">
+  <b>Interface principale</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>Visualisation du tri</b>
+</p>
+---
+
+##  Démonstration
 
 L'application permet de suivre visuellement chaque étape du tri :
 
@@ -34,9 +47,9 @@ L'application permet de suivre visuellement chaque étape du tri :
 
 ##  Technologies utilisées
 
-- HTML5
-- CSS3
-- JavaScript (Vanilla)
+* HTML5
+* CSS3
+* JavaScript (Vanilla)
 
 Aucune bibliothèque externe n'est utilisée.
 
@@ -44,12 +57,12 @@ Aucune bibliothèque externe n'est utilisée.
 
 ##  Complexité de l'algorithme
 
-| Cas | Complexité |
-|------|-----------|
-| Meilleur cas | O(n) |
-| Cas moyen | O(n²) |
-| Pire cas | O(n²) |
-| Espace mémoire | O(1) |
+| Cas            | Complexité |
+| -------------- | ---------- |
+| Meilleur cas   | O(n)       |
+| Cas moyen      | O(n²)      |
+| Pire cas       | O(n²)      |
+| Espace mémoire | O(1)       |
 
 ---
 
@@ -88,8 +101,6 @@ Puis cliquez sur :
 Generate Array
 ```
 
----
-
 ### 2️⃣ Régler la vitesse
 
 Utilisez le curseur :
@@ -99,8 +110,6 @@ Animation Speed
 ```
 
 pour accélérer ou ralentir l'animation.
-
----
 
 ### 3️⃣ Lancer le tri
 
@@ -112,12 +121,10 @@ Start Insertion Sort
 
 L'application affichera alors :
 
-- Les comparaisons effectuées
-- Les déplacements des éléments
-- Les insertions
-- L'évolution du tableau en temps réel
-
----
+* Les comparaisons effectuées
+* Les déplacements des éléments
+* Les insertions
+* L'évolution du tableau en temps réel
 
 ### 4️⃣ Consulter le code source
 
@@ -131,7 +138,7 @@ pour afficher ou masquer le code de référence.
 
 ---
 
-## Exemple de fonctionnement
+##  Exemple de fonctionnement
 
 ### Tableau initial
 
@@ -182,29 +189,57 @@ key = 3
 Insertion-Sort-Visualizer/
 │
 ├── index.html
+├── sary-1.png
+├── sary-2.png
 └── README.md
 ```
 
 ---
 
-##  Objectif pédagogique
+## Objectif pédagogique
 
 Ce projet a été développé afin de :
 
-- Comprendre le fonctionnement du tri par insertion
-- Observer chaque étape de l'algorithme
-- Apprendre les bases du tri de tableaux
-- Visualiser les comparaisons et déplacements effectués
+* Comprendre le fonctionnement du tri par insertion
+* Observer chaque étape de l'algorithme
+* Apprendre les bases du tri de tableaux
+* Visualiser les comparaisons et déplacements effectués
+* Faciliter l'apprentissage des algorithmes de tri
 
 ---
 
-##  Auteur
+##  Installation
+
+Clonez le dépôt :
+
+```bash
+git clone https://github.com/votre-utilisateur/Insertion-Sort-Visualizer.git
+```
+
+Accédez au dossier :
+
+```bash
+cd Insertion-Sort-Visualizer
+```
+
+Ouvrez simplement :
+
+```text
+index.html
+```
+
+dans votre navigateur préféré.
+
+---
+
+## Auteur
 
 Projet développé avec l'assistance de l'intelligence artificielle.
+et Nandrianina
 
 ---
 
-## Licence
+##  Licence
 
 Licence MIT.
 
