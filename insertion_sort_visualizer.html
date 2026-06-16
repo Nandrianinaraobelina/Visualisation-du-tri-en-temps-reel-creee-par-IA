@@ -1,687 +1,763 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insertion Sort Visualizer</title>
-    <style>
-        /* ============================================
-           VARIABLES CSS - Thème sombre technologique
-           ============================================ */
-        :root {
-            --bg-dark: #0a0e27;            /* Fond très sombre */
-            --bg-darker: #050810;          /* Fond encore plus sombre */
-            --bg-card: #151d3b;            /* Fond des cartes */
-            --text-primary: #e0e6ff;       /* Texte principal */
-            --text-secondary: #8892b0;     /* Texte secondaire */
-            --accent-green: #1dd1a1;       /* Vert teal */
-            --accent-orange: #ffa502;      /* Orange doré */
-            --accent-blue: #4db8ff;        /* Bleu clair */
-            --element-gray: #2a3655;       /* Gris des éléments */
-            --border-color: #2d3748;       /* Bordure */
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.3);
-            --border-radius: 8px;
-            --transition: all 0.2s ease;
-        }
-
-        /* ============================================
-           STYLES GLOBAUX
-           ============================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            font-family: 'Courier New', 'Monaco', monospace;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* ============================================
-           EN-TÊTE - TITRE
-           ============================================ */
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: slideDown 0.6s ease-out;
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            color: var(--text-primary);
-            font-weight: 400;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        /* ============================================
-           BADGES DE COMPLEXITÉ
-           ============================================ */
-        .complexity-badges {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .badge {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: var(--accent-blue);
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        /* ============================================
-           PANNEAU DE CONTRÔLE
-           ============================================ */
-        .control-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            margin-bottom: 40px;
-            animation: slideUp 0.6s ease-out 0.1s both;
-        }
-
-        .control-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            align-items: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .input-group label {
-            font-weight: 400;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
-        .input-group input {
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Courier New', monospace;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--accent-green);
-            box-shadow: 0 0 0 2px rgba(29, 209, 161, 0.1);
-        }
-
-        .slider-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .slider-group label {
-            font-weight: 400;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .slider-container input[type="range"] {
-            flex: 1;
-            height: 4px;
-            border-radius: 2px;
-            background: var(--element-gray);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        .slider-container input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .slider-container input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--accent-green);
-            cursor: pointer;
-            border: none;
-            transition: var(--transition);
-        }
-
-        .speed-value {
-            min-width: 50px;
-            text-align: center;
-            font-weight: 400;
-            color: var(--accent-blue);
-            font-size: 0.9rem;
-        }
-
-        .button {
-            padding: 10px 24px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 400;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            white-space: nowrap;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            border-color: var(--accent-green);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: var(--accent-green);
-            color: var(--bg-dark);
-            box-shadow: 0 0 20px rgba(29, 209, 161, 0.3);
-        }
-
-        .btn-primary:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--bg-dark);
-            color: var(--text-secondary);
-            border-color: var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        /* ============================================
-           SECTION VISUALISATION
-           ============================================ */
-        .visualization-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 40px 30px;
-            margin-bottom: 40px;
-            animation: slideUp 0.6s ease-out 0.2s both;
-        }
-
-        .visualization-title {
-            font-size: 0.85rem;
-            font-weight: 400;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .bars-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            min-height: 250px;
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .bars-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .bar-item {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .key-label {
-            color: var(--accent-orange);
-            font-size: 0.75rem;
-            margin-bottom: 5px;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .key-label.visible {
-            opacity: 1;
-        }
-
-        .bar {
-            width: 45px;
-            height: 45px;
-            background: var(--element-gray);
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.15s ease;
-            cursor: default;
-        }
-
-        .bar.sorted {
-            background: var(--accent-green);
-            border-color: var(--accent-green);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px rgba(29, 209, 161, 0.3);
-        }
-
-        .bar.current {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-            color: var(--bg-dark);
-            box-shadow: 0 0 15px rgba(255, 165, 2, 0.3);
-            transform: scale(1.1);
-            z-index: 10;
-        }
-
-        .bar.comparing {
-            background: rgba(255, 165, 2, 0.3);
-            border-color: var(--accent-orange);
-            color: var(--accent-orange);
-            box-shadow: 0 0 15px rgba(255, 165, 2, 0.2);
-            animation: pulse 0.6s ease-in-out;
-        }
-
-        /* ============================================
-           MESSAGE D'ACTION
-           ============================================ */
-        .action-message {
-            text-align: center;
-            font-size: 1rem;
-            color: var(--accent-orange);
-            font-weight: 400;
-            letter-spacing: 0.5px;
-            margin-bottom: 20px;
-            min-height: 25px;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        /* ============================================
-           CODE SOURCE AVEC NUMÉROS DE LIGNE
-           ============================================ */
-        .code-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            margin-bottom: 0;
-            animation: slideUp 0.6s ease-out 0.3s both;
-        }
-
-        .code-header {
-            background: var(--bg-darker);
-            border-bottom: 1px solid var(--border-color);
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .code-title {
-            font-size: 0.85rem;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-        }
-
-        .code-content {
-            display: none;
-            background: var(--bg-darker);
-            overflow-x: auto;
-            max-height: 450px;
-            overflow-y: auto;
-        }
-
-        .code-content.visible {
-            display: flex;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .code-lines {
-            display: flex;
-            width: 100%;
-        }
-
-        .code-line-numbers {
-            background: var(--bg-darker);
-            color: var(--element-gray);
-            padding: 20px 15px;
-            text-align: right;
-            user-select: none;
-            border-right: 1px solid var(--border-color);
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            min-width: 50px;
-        }
-
-        .code-text {
-            flex: 1;
-            padding: 20px 24px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre;
-            color: var(--text-primary);
-        }
-
-        .code-line {
-            display: block;
-            position: relative;
-        }
-
-        .code-line.highlight {
-            background: rgba(29, 209, 161, 0.1);
-        }
-
-        .keyword {
-            color: #ff6b9d;
-        }
-
-        .function {
-            color: var(--accent-blue);
-        }
-
-        .variable {
-            color: #a78bfa;
-        }
-
-        .string {
-            color: #86efac;
-        }
-
-        .comment {
-            color: var(--text-secondary);
-        }
-
-        .number {
-            color: #fbbf24;
-        }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Insertion Sort Visualizer</title>
+        <style>
+            /* ============================================
+            VARIABLES CSS - Thème Clair Moderne
+            ============================================ */
+            :root {
+                --bg-dark: #ffffff;
+                --bg-darker: #f8fafc;
+                --bg-card: #ffffff;
+                --text-primary: #1e293b;
+                --text-secondary: #64748b;
+                --accent-green: #10b981;
+                --accent-orange: #f59e0b;
+                --accent-blue: #3b82f6;
+                --element-gray: #e2e8f0;
+                --border-color: #e2e8f0;
+                --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+                --shadow-small: 0 2px 8px rgba(0, 0, 0, 0.04);
+                --border-radius: 8px;
+                --transition: all 0.2s ease;
+                --accent-red: #ef4444;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+            /* ============================================
+            STYLES GLOBAUX
+            ============================================ */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
+            html,
+            body {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Roboto,
+                    sans-serif;
+                background: var(--bg-dark);
+                color: var(--text-primary);
+                min-height: 100vh;
+                padding: 40px 20px;
             }
-            to {
-                opacity: 1;
-            }
-        }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
             }
-            50% {
-                opacity: 0.6;
-            }
-        }
 
-        /* ============================================
-           RESPONSIVE DESIGN
-           ============================================ */
-        @media (max-width: 768px) {
+            /* ============================================
+            EN-TÊTE - TITRE
+            ============================================ */
+            .header {
+                text-align: center;
+                margin-bottom: 50px;
+                animation: slideDown 0.6s ease-out;
+            }
+
             .header h1 {
-                font-size: 2rem;
+                font-size: 3rem;
+                color: var(--text-primary);
+                font-weight: 700;
+                margin-bottom: 15px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
             }
 
+            .header p {
+                color: var(--text-secondary);
+                font-size: 1rem;
+                font-weight: 400;
+                letter-spacing: 0.5px;
+            }
+
+            /* ============================================
+            BADGES DE COMPLEXITÉ
+            ============================================ */
             .complexity-badges {
-                flex-direction: column;
-                gap: 10px;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+
+            .badge {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                color: var(--accent-blue);
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                box-shadow: var(--shadow-small);
+            }
+
+            /* ============================================
+            PANNEAU DE CONTRÔLE
+            ============================================ */
+            .control-panel {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                padding: 25px;
+                margin-bottom: 40px;
+                box-shadow: var(--shadow);
+                animation: slideUp 0.6s ease-out 0.1s both;
             }
 
             .control-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 25px;
+                align-items: flex-end;
+                margin-bottom: 20px;
+            }
+
+            .input-group {
+                display: flex;
                 flex-direction: column;
+                gap: 8px;
+                flex: 1;
+                min-width: 150px;
             }
 
-            .input-group,
+            .input-group label {
+                font-weight: 500;
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .input-group input {
+                padding: 10px 14px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 0.95rem;
+                transition: var(--transition);
+                background: #f8fafc;
+                color: var(--text-primary);
+                font-family: inherit;
+            }
+
+            .input-group input:focus {
+                outline: none;
+                border-color: var(--accent-blue);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            }
+
             .slider-group {
-                width: 100%;
-                min-width: unset;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                flex: 1;
+                min-width: 150px;
             }
 
-            .bar {
-                width: 35px;
-                height: 35px;
-                font-size: 0.8rem;
+            .slider-group label {
+                font-weight: 500;
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                letter-spacing: 0.5px;
+            }
+
+            .slider-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .slider-container input[type="range"] {
+                flex: 1;
+                height: 6px;
+                border-radius: 3px;
+                background: var(--element-gray);
+                outline: none;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .slider-container input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: var(--accent-blue);
+                cursor: pointer;
+                transition: var(--transition);
+                box-shadow: var(--shadow-small);
+            }
+
+            .slider-container input[type="range"]::-moz-range-thumb {
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: var(--accent-blue);
+                cursor: pointer;
+                border: none;
+                transition: var(--transition);
+                box-shadow: var(--shadow-small);
+            }
+
+            .speed-value {
+                min-width: 50px;
+                text-align: center;
+                font-weight: 600;
+                color: var(--accent-blue);
+                font-size: 0.9rem;
+            }
+
+            .button {
+                padding: 10px 24px;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                white-space: nowrap;
+                font-family: inherit;
+                letter-spacing: 0.5px;
+            }
+
+            .btn-primary {
+                background: var(--accent-blue);
+                color: white;
+                border-color: var(--accent-blue);
+            }
+
+            .btn-primary:hover:not(:disabled) {
+                background: #2563eb;
+                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            }
+
+            .btn-primary:active:not(:disabled) {
+                transform: scale(0.98);
+            }
+
+            .btn-primary:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+            .btn-secondary {
+                background: #ffffff;
+                color: var(--text-secondary);
+                border-color: var(--border-color);
+            }
+
+            .btn-secondary:hover {
+                border-color: var(--accent-blue);
+                color: var(--accent-blue);
+                background: #f8fafc;
+            }
+
+            /* ============================================
+            SECTION VISUALISATION
+            ============================================ */
+            .visualization-section {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                padding: 40px 30px;
+                margin-bottom: 40px;
+                box-shadow: var(--shadow);
+                animation: slideUp 0.6s ease-out 0.2s both;
+            }
+
+            .visualization-title {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--text-secondary);
+                margin-bottom: 30px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
             .bars-container {
-                gap: 8px;
-                min-height: 200px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                min-height: 250px;
+                position: relative;
+                margin-bottom: 20px;
+            }
+
+            .bars-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .bar-item {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .key-label {
+                color: var(--accent-orange);
+                font-size: 0.75rem;
+                margin-bottom: 5px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+
+            .key-label.visible {
+                opacity: 1;
+            }
+
+            .bar {
+                width: 45px;
+                height: 45px;
+                background: #f1f5f9;
+                border: 2px solid var(--border-color);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-primary);
+                font-size: 0.95rem;
+                font-weight: 600;
+                transition: all 0.15s ease;
+                cursor: default;
+            }
+
+            .bar.sorted {
+                background: var(--accent-green);
+                border-color: var(--accent-green);
+                color: white;
+                box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+            }
+
+            .bar.current {
+                background: var(--accent-orange);
+                border-color: var(--accent-orange);
+                color: white;
+                box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+                transform: scale(1.1);
+                z-index: 10;
+            }
+
+            .bar.comparing {
+                background: rgba(245, 158, 11, 0.15);
+                border-color: var(--accent-orange);
+                color: var(--accent-orange);
+                animation: pulse 0.6s ease-in-out;
+            }
+
+            /* ============================================
+            MESSAGE D'ACTION
+            ============================================ */
+            .action-message {
+                text-align: center;
+                font-size: 1rem;
+                color: var(--accent-orange);
+                font-weight: 500;
+                letter-spacing: 0.5px;
+                margin-bottom: 20px;
+                min-height: 25px;
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            /* ============================================
+            ÉDITEUR DE CODE PERSONNALISÉ STYLES
+            ============================================ */
+            .custom-editor-container {
+                padding: 20px 24px;
+                background: var(--bg-darker);
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .editor-info {
+                color: var(--text-primary);
+            }
+
+            .custom-code-editor {
+                width: 100%;
+                height: 250px;
+                background: #1e293b;
+                color: #86efac;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+                padding: 12px;
+                font-family: "Courier New", monospace;
+                font-size: 0.9rem;
+                line-height: 1.5;
+                resize: vertical;
+                outline: none;
+            }
+
+            .custom-code-editor:focus {
+                border-color: var(--accent-blue);
+            }
+
+            .editor-buttons {
+                display: flex;
+                gap: 15px;
+            }
+
+            .error-message {
+                font-size: 0.85rem;
+                min-height: 20px;
+                transition: var(--transition);
+            }
+
+            .error-message.success {
+                color: var(--accent-green);
+            }
+            .error-message.error {
+                color: var(--accent-red);
+            }
+
+            /* ============================================
+            CODE SOURCE AVEC NUMÉROS DE LIGNE
+            ============================================ */
+            .code-section {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: var(--border-radius);
+                overflow: hidden;
+                margin-bottom: 20px;
+                box-shadow: var(--shadow);
+                animation: slideUp 0.6s ease-out 0.3s both;
+            }
+
+            .code-header {
+                background: var(--bg-darker);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .code-title {
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-secondary);
+            }
+
+            .code-content {
+                display: none;
+                background: #fafafa;
+                overflow-x: auto;
+                max-height: 450px;
+                overflow-y: auto;
+            }
+
+            .code-content.visible {
+                display: flex;
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            .code-lines {
+                display: flex;
+                width: 100%;
+            }
+
+            .code-line-numbers {
+                background: #f1f5f9;
+                color: #94a3b8;
+                padding: 20px 15px;
+                text-align: right;
+                user-select: none;
+                border-right: 1px solid var(--border-color);
+                font-family: "Courier New", monospace;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                min-width: 50px;
             }
 
             .code-text {
-                font-size: 0.8rem;
+                flex: 1;
+                padding: 20px 24px;
+                font-family: "Courier New", monospace;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                white-space: pre;
+                color: #0f172a;
             }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- ============================================
-             EN-TÊTE
-             ============================================ -->
-        <div class="header">
-            <h1>INSERTION SORT</h1>
-            <p>Builds the sorted prefix one item at a time, shifting larger elements<br>right to make room.</p>
-        </div>
 
-        <!-- ============================================
-             BADGES DE COMPLEXITÉ
-             ============================================ -->
-        <div class="complexity-badges">
-            <div class="badge">TIME : O(n²)</div>
-            <div class="badge">SPACE : O(1)</div>
-        </div>
+            .code-line {
+                display: block;
+                position: relative;
+            }
 
-        <!-- ============================================
-             PANNEAU DE CONTRÔLE
-             ============================================ -->
-        <div class="control-panel">
-            <div class="control-row">
-                <div class="input-group">
-                    <label for="arraySize">Array Size</label>
-                    <input 
-                        type="number" 
-                        id="arraySize" 
-                        min="5" 
-                        max="15" 
-                        value="9"
-                        placeholder="Entrez la taille du tableau"
+            .code-line.highlight {
+                background: rgba(59, 130, 246, 0.1);
+            }
+
+            .keyword {
+                color: #d946ef;
+            }
+            .function {
+                color: #2563eb;
+            }
+            .variable {
+                color: #7c3aed;
+            }
+            .string {
+                color: #059669;
+            }
+            .comment {
+                color: #64748b;
+            }
+            .number {
+                color: #ea580c;
+            }
+
+            /* ============================================
+            ANIMATIONS
+            ============================================ */
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.6;
+                }
+            }
+
+            /* ============================================
+            RESPONSIVE DESIGN
+            ============================================ */
+            @media (max-width: 768px) {
+                .header h1 {
+                    font-size: 2rem;
+                }
+                .complexity-badges {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .control-row {
+                    flex-direction: column;
+                }
+                .input-group,
+                .slider-group {
+                    width: 100%;
+                    min-width: unset;
+                }
+                .bar {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 0.8rem;
+                }
+                .bars-container {
+                    gap: 8px;
+                    min-height: 200px;
+                }
+                .code-text {
+                    font-size: 0.8rem;
+                }
+                .editor-buttons {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>INSERTION SORT</h1>
+                <p>
+                    Builds the sorted prefix one item at a time, shifting larger
+                    elements<br />right to make room.
+                </p>
+            </div>
+
+            <div class="complexity-badges">
+                <div class="badge">TIME : O(n²)</div>
+                <div class="badge">SPACE : O(1)</div>
+            </div>
+
+            <div class="control-panel">
+                <div class="control-row">
+                    <div class="input-group">
+                        <label for="arraySize">Array Size</label>
+                        <input
+                            type="number"
+                            id="arraySize"
+                            min="5"
+                            max="15"
+                            value="9"
+                        />
+                    </div>
+                    <button class="button btn-primary" id="generateBtn">
+                        Generate Array
+                    </button>
+                </div>
+
+                <div class="control-row">
+                    <div class="slider-group">
+                        <label for="speedSlider">Animation Speed</label>
+                        <div class="slider-container">
+                            <input
+                                type="range"
+                                id="speedSlider"
+                                min="100"
+                                max="800"
+                                value="400"
+                                step="50"
+                            />
+                            <span class="speed-value" id="speedValue"
+                                >400ms</span
+                            >
+                        </div>
+                    </div>
+                    <button class="button btn-primary" id="startBtn" disabled>
+                        Start Insertion Sort
+                    </button>
+                </div>
+            </div>
+
+            <div class="visualization-section">
+                <div class="visualization-title">Array Visualization</div>
+                <div class="action-message" id="actionMessage"></div>
+                <div class="bars-container">
+                    <div class="bars-wrapper" id="barsContainer"></div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">
+                        Custom Sort Algorithm (JavaScript Async)
+                    </div>
+                    <button
+                        class="button btn-secondary"
+                        id="toggleCustomCodeBtn"
                     >
+                        Show / Hide Editor
+                    </button>
                 </div>
-                <button class="button btn-primary" id="generateBtn">Generate Array</button>
-            </div>
-
-            <div class="control-row">
-                <div class="slider-group">
-                    <label for="speedSlider">Animation Speed</label>
-                    <div class="slider-container">
-                        <input 
-                            type="range" 
-                            id="speedSlider" 
-                            min="100" 
-                            max="800" 
-                            value="400"
-                            step="50"
-                        >
-                        <span class="speed-value" id="speedValue">400ms</span>
+                <div class="code-content" id="customCodeContent">
+                    <div class="custom-editor-container">
+                        <div class="editor-info">
+                            <p>
+                                📝 Écrivez un algorithme asynchrone pour
+                                l'animer en direct !
+                            </p>
+                            <p
+                                style="
+                                    font-size: 0.82rem;
+                                    margin-top: 8px;
+                                    color: var(--text-secondary);
+                                "
+                            >
+                                Utilisez
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.compare(i, j)</code
+                                >,
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.swap(i, j)</code
+                                >, et
+                                <code style="color: var(--accent-orange)"
+                                    >await tools.done()</code
+                                >.
+                            </p>
+                        </div>
+                        <textarea
+                            id="customCodeEditor"
+                            class="custom-code-editor"
+                        ></textarea>
+                        <div class="editor-buttons">
+                            <button
+                                class="button btn-primary"
+                                id="testCustomCodeBtn"
+                            >
+                                Run Custom Algorithm
+                            </button>
+                            <button
+                                class="button btn-secondary"
+                                id="resetCodeBtn"
+                            >
+                                Reset to Template
+                            </button>
+                        </div>
+                        <div class="error-message" id="errorMessage"></div>
                     </div>
                 </div>
-                <button class="button btn-primary" id="startBtn" disabled>Start Insertion Sort</button>
             </div>
-        </div>
 
-        <!-- ============================================
-             SECTION DE VISUALISATION
-             ============================================ -->
-        <div class="visualization-section">
-            <div class="visualization-title">Array Visualization</div>
-            
-            <div class="action-message" id="actionMessage"></div>
-            
-            <div class="bars-container">
-                <div class="bars-wrapper" id="barsContainer">
-                    <!-- Les éléments seront générés par JavaScript -->
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">Reference Source Code (Python)</div>
+                    <button class="button btn-secondary" id="toggleCodeBtn">
+                        Show / Hide Code
+                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- ============================================
-             ÉDITEUR DE CODE PERSONNALISÉ
-             ============================================ -->
-        <div class="code-section">
-            <div class="code-header">
-                <div class="code-title">Custom Sort Algorithm</div>
-                <button class="button btn-secondary" id="toggleCustomCodeBtn">Show / Hide Editor</button>
-            </div>
-            <div class="code-content" id="customCodeContent">
-                <div class="custom-editor-container">
-                    <div class="editor-info">
-                        <p>📝 Entrez votre fonction de tri personnalisée</p>
-                        <p style="font-size: 0.85rem; margin-top: 8px; color: var(--text-secondary);">
-                            La fonction doit prendre un tableau en paramètre et le trier sur place.
-                        </p>
+                <div class="code-content" id="codeContent">
+                    <div class="code-lines">
+                        <div class="code-line-numbers" id="lineNumbers"></div>
+                        <div class="code-text" id="codeText"></div>
                     </div>
-                    <textarea id="customCodeEditor" class="custom-code-editor" placeholder="function customSort(arr) {
-    // Votre code ici
-    return arr;
-}"></textarea>
-                    <div class="editor-buttons">
-                        <button class="button btn-primary" id="testCustomCodeBtn">Test Custom Algorithm</button>
-                        <button class="button btn-secondary" id="resetCodeBtn">Reset to Default</button>
-                    </div>
-                    <div class="error-message" id="errorMessage"></div>
                 </div>
             </div>
         </div>
 
-        <!-- ============================================
-             CODE SOURCE DE RÉFÉRENCE
-             ============================================ -->
-        <div class="code-section">
-            <div class="code-header">
-                <div class="code-title">Reference Source Code</div>
-                <button class="button btn-secondary" id="toggleCodeBtn">Show / Hide Code</button>
-            </div>
-            <div class="code-content" id="codeContent">
-                <div class="code-lines">
-                    <div class="code-line-numbers" id="lineNumbers"></div>
-                    <div class="code-text" id="codeText"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================
-         SCRIPT JAVASCRIPT
-         ============================================ -->
-    <script>
-        // ============================================
-        // CODE SOURCE DE L'ALGORITHME
-        // ============================================
-        const sourceCode = `def insertionSort(a):
+        <script>
+            const sourceCode = `def insertionSort(a):
     n = len(a)
     for i in range(1, n):
         key = a[i]
@@ -691,271 +767,243 @@
             j -= 1
         a[j] = key`;
 
-        // ============================================
-        // ÉTAT DE L'APPLICATION
-        // ============================================
-        const state = {
-            array: [],
-            isRunning: false,
-            speed: 400,
-            arraySize: 9
-        };
+            // Modèle de code interactif fourni à l'utilisateur
+            const defaultCustomCode = `async function customSort(arr, tools) {
+    let n = arr.length;
 
-        // ============================================
-        // ÉLÉMENTS DU DOM
-        // ============================================
-        const elements = {
-            arraySize: document.getElementById('arraySize'),
-            generateBtn: document.getElementById('generateBtn'),
-            startBtn: document.getElementById('startBtn'),
-            speedSlider: document.getElementById('speedSlider'),
-            speedValue: document.getElementById('speedValue'),
-            barsContainer: document.getElementById('barsContainer'),
-            actionMessage: document.getElementById('actionMessage'),
-            toggleCodeBtn: document.getElementById('toggleCodeBtn'),
-            codeContent: document.getElementById('codeContent'),
-            codeText: document.getElementById('codeText'),
-            lineNumbers: document.getElementById('lineNumbers')
-        };
+    // Exemple d'un Tri à Bulles (Bubble Sort) entièrement animé !
+    for (let i = 0; i < n - 1; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
 
-        // ============================================
-        // ÉVÉNEMENTS
-        // ============================================
-        elements.generateBtn.addEventListener('click', generateArray);
-        elements.startBtn.addEventListener('click', startSorting);
-        elements.speedSlider.addEventListener('input', updateSpeed);
-        elements.toggleCodeBtn.addEventListener('click', toggleCode);
+            // 1. On illumine et compare les deux barres voisines
+            let doitChanger = await tools.compare(j, j + 1);
 
-        // ============================================
-        // FONCTION: Initialiser le code source
-        // ============================================
-        function initializeCodeDisplay() {
-            const lines = sourceCode.split('\n');
-            
-            // Générer les numéros de ligne
-            elements.lineNumbers.innerHTML = lines.map((_, i) => `<div>${i + 1}</div>`).join('');
-            
-            // Générer le code formaté
-            elements.codeText.innerHTML = lines.map((line, i) => {
-                let formatted = line
-                    .replace(/def /g, '<span class="keyword">def </span>')
-                    .replace(/range/g, '<span class="function">range</span>')
-                    .replace(/len/g, '<span class="function">len</span>')
-                    .replace(/while /g, '<span class="keyword">while </span>')
-                    .replace(/for /g, '<span class="keyword">for </span>')
-                    .replace(/in /g, '<span class="keyword">in </span>')
-                    .replace(/and /g, '<span class="keyword">and </span>')
-                    .replace(/[0-9]+/g, '<span class="number">$&</span>')
-                    .replace(/([a-z_]+)\(/g, '<span class="function">$1</span>(');
-                
-                return `<div class="code-line" id="line-${i + 1}">${formatted}</div>`;
-            }).join('');
-        }
-
-        // ============================================
-        // FONCTION: Générer un tableau aléatoire
-        // ============================================
-        function generateArray() {
-            console.log('Generate Array clicked');
-            const size = parseInt(elements.arraySize.value);
-            console.log('Size:', size);
-
-            if (isNaN(size) || size < 5 || size > 15) {
-                alert('Taille du tableau: 5 à 15');
-                return;
-            }
-
-            state.arraySize = size;
-            state.array = [];
-            state.isRunning = false;
-
-            for (let i = 0; i < size; i++) {
-                state.array.push(Math.floor(Math.random() * 100) + 1);
-            }
-
-            console.log('Array generated:', state.array);
-            updateVisualization();
-            elements.actionMessage.textContent = 'Array generated. Ready to sort!';
-            elements.startBtn.disabled = false;
-            console.log('Start button disabled:', elements.startBtn.disabled);
-        }
-
-        // ============================================
-        // FONCTION: Mettre à jour la visualisation
-        // ============================================
-        function updateVisualization() {
-            elements.barsContainer.innerHTML = '';
-
-            state.array.forEach((value, index) => {
-                const barItem = document.createElement('div');
-                barItem.className = 'bar-item';
-                barItem.id = `bar-item-${index}`;
-
-                const keyLabel = document.createElement('div');
-                keyLabel.className = 'key-label';
-                keyLabel.textContent = 'key';
-                keyLabel.id = `key-label-${index}`;
-
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                bar.id = `bar-${index}`;
-                bar.textContent = value;
-
-                barItem.appendChild(keyLabel);
-                barItem.appendChild(bar);
-                elements.barsContainer.appendChild(barItem);
-            });
-        }
-
-        // ============================================
-        // FONCTION: Mettre à jour la valeur d'un élément
-        // ============================================
-        function updateBarValue(index) {
-            const bar = document.getElementById(`bar-${index}`);
-            if (bar) {
-                bar.textContent = state.array[index];
+            if (doitChanger) {
+                // 2. On inverse les valeurs visuellement si nécessaire
+                await tools.swap(j, j + 1);
             }
         }
+    }
+    // 3. On termine proprement l'animation
+    await tools.done();
+}`;
 
-        // ============================================
-        // FONCTION: Mettre à jour la vitesse
-        // ============================================
-        function updateSpeed() {
-            state.speed = parseInt(elements.speedSlider.value);
-            elements.speedValue.textContent = `${state.speed}ms`;
-        }
+            // ============================================
+            // ÉTAT DE L'APPLICATION
+            // ============================================
+            const state = {
+                array: [],
+                isRunning: false,
+                speed: 400,
+                arraySize: 9,
+            };
 
-        // ============================================
-        // FONCTION: Attendre (délai asynchrone)
-        // ============================================
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+            const elements = {
+                arraySize: document.getElementById("arraySize"),
+                generateBtn: document.getElementById("generateBtn"),
+                startBtn: document.getElementById("startBtn"),
+                speedSlider: document.getElementById("speedSlider"),
+                speedValue: document.getElementById("speedValue"),
+                barsContainer: document.getElementById("barsContainer"),
+                actionMessage: document.getElementById("actionMessage"),
+                toggleCodeBtn: document.getElementById("toggleCodeBtn"),
+                codeContent: document.getElementById("codeContent"),
+                codeText: document.getElementById("codeText"),
+                lineNumbers: document.getElementById("lineNumbers"),
+                toggleCustomCodeBtn: document.getElementById(
+                    "toggleCustomCodeBtn",
+                ),
+                customCodeContent: document.getElementById("customCodeContent"),
+                customCodeEditor: document.getElementById("customCodeEditor"),
+                testCustomCodeBtn: document.getElementById("testCustomCodeBtn"),
+                resetCodeBtn: document.getElementById("resetCodeBtn"),
+                errorMessage: document.getElementById("errorMessage"),
+            };
 
-        // ============================================
-        // FONCTION: Mettre en évidence une barre
-        // ============================================
-        function highlightBar(index, className) {
-            const bar = document.getElementById(`bar-${index}`);
-            if (bar) {
-                bar.classList.add(className);
+            // Événements
+            elements.generateBtn.addEventListener("click", generateArray);
+            elements.startBtn.addEventListener("click", startSorting);
+            elements.speedSlider.addEventListener("input", updateSpeed);
+            elements.toggleCodeBtn.addEventListener("click", () =>
+                elements.codeContent.classList.toggle("visible"),
+            );
+            elements.toggleCustomCodeBtn.addEventListener("click", () =>
+                elements.customCodeContent.classList.toggle("visible"),
+            );
+            elements.resetCodeBtn.addEventListener("click", resetCustomCode);
+            elements.testCustomCodeBtn.addEventListener(
+                "click",
+                executeCustomCode,
+            );
+
+            // Initialisation
+            initializeCodeDisplay();
+            resetCustomCode();
+            generateArray();
+
+            function initializeCodeDisplay() {
+                const lines = sourceCode.split("\n");
+                elements.lineNumbers.innerHTML = lines
+                    .map((_, i) => `<div>${i + 1}</div>`)
+                    .join("");
+                elements.codeText.innerHTML = lines
+                    .map((line, i) => {
+                        let formatted = line
+                            .replace(
+                                /def /g,
+                                '<span class="keyword">def </span>',
+                            )
+                            .replace(
+                                /range/g,
+                                '<span class="function">range</span>',
+                            )
+                            .replace(
+                                /len/g,
+                                '<span class="function">len</span>',
+                            )
+                            .replace(
+                                /while /g,
+                                '<span class="keyword">while </span>',
+                            )
+                            .replace(
+                                /for /g,
+                                '<span class="keyword">for </span>',
+                            )
+                            .replace(/in /g, '<span class="keyword">in </span>')
+                            .replace(
+                                /and /g,
+                                '<span class="keyword">and </span>',
+                            )
+                            .replace(
+                                /[0-9]+/g,
+                                '<span class="number">$&</span>',
+                            )
+                            .replace(
+                                /([a-z_]+)\(/g,
+                                '<span class="function">$1</span>(',
+                            );
+                        return `<div class="code-line" id="line-${i + 1}">${formatted}</div>`;
+                    })
+                    .join("");
             }
-        }
 
-        // ============================================
-        // FONCTION: Retirer la mise en évidence
-        // ============================================
-        function unhighlightBar(index, className) {
-            const bar = document.getElementById(`bar-${index}`);
-            if (bar) {
-                bar.classList.remove(className);
+            function resetCustomCode() {
+                elements.customCodeEditor.value = defaultCustomCode;
+                clearError();
             }
-        }
 
-        // ============================================
-        // FONCTION: Afficher le label "key"
-        // ============================================
-        function showKeyLabel(index) {
-            const label = document.getElementById(`key-label-${index}`);
-            if (label) {
-                label.classList.add('visible');
+            function clearError() {
+                elements.errorMessage.textContent = "";
+                elements.errorMessage.className = "error-message";
             }
-        }
 
-        // ============================================
-        // FONCTION: Cacher le label "key"
-        // ============================================
-        function hideKeyLabel(index) {
-            const label = document.getElementById(`key-label-${index}`);
-            if (label) {
-                label.classList.remove('visible');
-            }
-        }
-
-        // ============================================
-        // FONCTION: Afficher un message d'action
-        // ============================================
-        function showAction(message) {
-            elements.actionMessage.textContent = message;
-        }
-
-        // ============================================
-        // FONCTION: Surligner une ligne du code
-        // ============================================
-        function highlightCodeLine(lineNum) {
-            // Enlever les surlignages précédents
-            document.querySelectorAll('.code-line.highlight').forEach(el => {
-                el.classList.remove('highlight');
-            });
-            
-            if (lineNum > 0 && lineNum <= 12) {
-                const line = document.getElementById(`line-${lineNum}`);
-                if (line) {
-                    line.classList.add('highlight');
-                    try {
-                        line.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    } catch (e) {
-                        // Ignorer les erreurs de scrollIntoView
-                    }
+            function generateArray() {
+                if (state.isRunning) return;
+                const size = parseInt(elements.arraySize.value);
+                if (isNaN(size) || size < 5 || size > 15) {
+                    alert("Taille du tableau : entre 5 et 15");
+                    return;
                 }
+                state.arraySize = size;
+                state.array = Array.from(
+                    { length: size },
+                    () => Math.floor(Math.random() * 100) + 1,
+                );
+                updateVisualization();
+                elements.actionMessage.textContent = "New array generated!";
+                elements.startBtn.disabled = false;
             }
-        }
 
-        // ============================================
-        // FONCTION: Déplacer un élément dans la visualisation
-        // ============================================
-        function moveElement(fromIndex, toIndex) {
-            const value = state.array[fromIndex];
-            state.array.splice(fromIndex, 1);
-            state.array.splice(toIndex, 0, value);
-            updateVisualization();
-        }
+            function updateVisualization() {
+                elements.barsContainer.innerHTML = "";
+                state.array.forEach((value, index) => {
+                    const barItem = document.createElement("div");
+                    barItem.className = "bar-item";
 
-        // ============================================
-        // FONCTION: Algorithme Insertion Sort Visualisé
-        // ============================================
-        async function insertionSortVisualized() {
-            try {
+                    const keyLabel = document.createElement("div");
+                    keyLabel.className = "key-label";
+                    keyLabel.textContent = "key";
+                    keyLabel.id = `key-label-${index}`;
+
+                    const bar = document.createElement("div");
+                    bar.className = "bar";
+                    bar.id = `bar-${index}`;
+                    bar.textContent = value;
+
+                    barItem.appendChild(keyLabel);
+                    barItem.appendChild(bar);
+                    elements.barsContainer.appendChild(barItem);
+                });
+            }
+
+            function updateSpeed() {
+                state.speed = parseInt(elements.speedSlider.value);
+                elements.speedValue.textContent = `${state.speed}ms`;
+            }
+
+            const delay = (ms) =>
+                new Promise((resolve) => setTimeout(resolve, ms));
+
+            function highlightBar(index, className) {
+                const bar = document.getElementById(`bar-${index}`);
+                if (bar) bar.classList.add(className);
+            }
+
+            function unhighlightBar(index, className) {
+                const bar = document.getElementById(`bar-${index}`);
+                if (bar) bar.classList.remove(className);
+            }
+
+            function highlightCodeLine(lineNum) {
+                document
+                    .querySelectorAll(".code-line.highlight")
+                    .forEach((el) => el.classList.remove("highlight"));
+                const line = document.getElementById(`line-${lineNum}`);
+                if (line) line.classList.add("highlight");
+            }
+
+            // ============================================
+            // VISUALISATION : INSERTION SORT DE RÉFÉRENCE
+            // ============================================
+            async function startSorting() {
+                if (state.isRunning) return;
+                setRunningState(true);
+
                 highlightCodeLine(1);
-                showAction('Starting insertion sort...');
+                elements.actionMessage.textContent =
+                    "Starting insertion sort...";
                 await delay(state.speed);
 
                 const arr = state.array;
                 const n = arr.length;
 
                 for (let i = 1; i < n; i++) {
-                    // Réinitialiser les styles de la boucle précédente
-                    for (let k = 0; k < i; k++) {
-                        unhighlightBar(k, 'comparing');
-                    }
+                    for (let k = 0; k < i; k++) unhighlightBar(k, "comparing");
 
                     highlightCodeLine(3);
-                    showKeyLabel(i);
-                    highlightBar(i, 'current');
-                    showAction(`i = ${i}, key = ${arr[i]}`);
+                    document
+                        .getElementById(`key-label-${i}`)
+                        ?.classList.add("visible");
+                    highlightBar(i, "current");
+                    elements.actionMessage.textContent = `i = ${i}, key = ${arr[i]}`;
                     await delay(state.speed);
 
                     let key = arr[i];
                     let j = i;
-
                     highlightCodeLine(4);
                     await delay(state.speed / 2);
 
                     while (j > 0 && arr[j - 1] > key) {
                         highlightCodeLine(5);
-                        highlightBar(j - 1, 'comparing');
-                        showAction(`Compare a[${j - 1}] = ${arr[j - 1]} with ${key}`);
+                        highlightBar(j - 1, "comparing");
+                        elements.actionMessage.textContent = `Compare a[${j - 1}] (${arr[j - 1]}) > key (${key})`;
                         await delay(state.speed);
 
-                        unhighlightBar(j - 1, 'comparing');
-                        
+                        unhighlightBar(j - 1, "comparing");
                         highlightCodeLine(6);
-                        showAction(`SHIFT a[${j - 1}] → a[${j}]`);
-                        
-                        // Décaler l'élément
                         arr[j] = arr[j - 1];
-                        updateBarValue(j);
-                        
+                        document.getElementById(`bar-${j}`).textContent =
+                            arr[j];
                         await delay(state.speed / 2);
 
                         highlightCodeLine(7);
@@ -965,102 +1013,107 @@
 
                     highlightCodeLine(8);
                     arr[j] = key;
-                    updateBarValue(j);
-                    showAction(`INSERT ${key} at position ${j}`);
-                    
+                    document.getElementById(`bar-${j}`).textContent = key;
                     await delay(state.speed);
 
-                    unhighlightBar(i, 'current');
-                    hideKeyLabel(i);
-
-                    // Marquer les éléments triés
-                    for (let k = 0; k <= i; k++) {
-                        highlightBar(k, 'sorted');
-                    }
-                    
-                    await delay(state.speed / 2);
+                    unhighlightBar(i, "current");
+                    document
+                        .getElementById(`key-label-${i}`)
+                        ?.classList.remove("visible");
+                    for (let k = 0; k <= i; k++) highlightBar(k, "sorted");
                 }
 
-                showAction('✓ Sorting Complete!');
+                elements.actionMessage.textContent =
+                    "✓ Insertion Sort Complete!";
                 highlightCodeLine(0);
-            } catch (error) {
-                console.error('Erreur:', error);
-                showAction('Erreur lors du tri!');
-            }
-        }
-
-        // ============================================
-        // FONCTION: Démarrer le tri
-        // ============================================
-        async function startSorting() {
-            console.log('Start Sorting clicked');
-            console.log('Is running:', state.isRunning);
-            console.log('Array length:', state.array.length);
-            console.log('Array:', state.array);
-            
-            if (state.isRunning) {
-                console.log('Already running');
-                return;
+                setRunningState(false);
             }
 
-            if (state.array.length === 0) {
-                console.log('Array is empty');
-                alert('Please generate an array first!');
-                return;
+            function setRunningState(running) {
+                state.isRunning = running;
+                elements.startBtn.disabled = running;
+                elements.generateBtn.disabled = running;
+                elements.testCustomCodeBtn.disabled = running;
             }
 
-            console.log('Starting sort...');
-            state.isRunning = true;
-            elements.startBtn.disabled = true;
-            elements.generateBtn.disabled = true;
-            elements.arraySize.disabled = true;
-            elements.speedSlider.disabled = true;
+            // ============================================
+            // MACHINE D'ANIMATION POUR L'ÉDITEUR PERSO
+            // ============================================
+            async function executeCustomCode() {
+                if (state.isRunning) return;
+                clearError();
 
-            try {
-                await insertionSortVisualized();
-            } catch (error) {
-                console.error('Error during sorting:', error);
-                alert('Une erreur est survenue!');
+                const userCode = elements.customCodeEditor.value;
+
+                // Création de la boîte à outils d'animation passée à l'utilisateur
+                const animationTools = {
+                    compare: async (index1, index2) => {
+                        highlightBar(index1, "comparing");
+                        highlightBar(index2, "comparing");
+                        elements.actionMessage.textContent = `Comparing indices ${index1} and ${index2}`;
+                        await delay(state.speed);
+                        unhighlightBar(index1, "comparing");
+                        unhighlightBar(index2, "comparing");
+                        return state.array[index1] > state.array[index2];
+                    },
+                    swap: async (index1, index2) => {
+                        highlightBar(index1, "current");
+                        highlightBar(index2, "current");
+                        elements.actionMessage.textContent = `Swapping items ${index1} ⇄ ${index2}`;
+
+                        let temp = state.array[index1];
+                        state.array[index1] = state.array[index2];
+                        state.array[index2] = temp;
+
+                        document.getElementById(`bar-${index1}`).textContent =
+                            state.array[index1];
+                        document.getElementById(`bar-${index2}`).textContent =
+                            state.array[index2];
+
+                        await delay(state.speed);
+                        unhighlightBar(index1, "current");
+                        unhighlightBar(index2, "current");
+                    },
+                    done: async () => {
+                        for (let k = 0; k < state.array.length; k++) {
+                            highlightBar(k, "sorted");
+                        }
+                        elements.actionMessage.textContent =
+                            "✓ Custom Sort Complete!";
+                    },
+                };
+
+                try {
+                    // Instanciation saine de la fonction asynchrone écrite par l'utilisateur
+                    const userAlgorithm = new Function(
+                        `return (${userCode})`,
+                    )();
+
+                    if (typeof userAlgorithm !== "function") {
+                        throw new Error(
+                            "Le texte fourni n'est pas une fonction valide.",
+                        );
+                    }
+
+                    setRunningState(true);
+                    elements.errorMessage.className = "error-message success";
+                    elements.errorMessage.textContent =
+                        "⚙️ Running custom algorithm...";
+
+                    // Lancement de son algorithme avec nos outils d'animation
+                    await userAlgorithm(state.array, animationTools);
+
+                    elements.errorMessage.textContent =
+                        "✓ Executed successfully!";
+                } catch (err) {
+                    elements.errorMessage.className = "error-message error";
+                    elements.errorMessage.textContent =
+                        "❌ Error: " + err.message;
+                    console.error(err);
+                } finally {
+                    setRunningState(false);
+                }
             }
-
-            state.isRunning = false;
-            elements.startBtn.disabled = false;
-            elements.generateBtn.disabled = false;
-            elements.arraySize.disabled = false;
-            elements.speedSlider.disabled = false;
-            console.log('Sorting finished');
-        }
-
-        // ============================================
-        // FONCTION: Basculer l'affichage du code
-        // ============================================
-        function toggleCode() {
-            elements.codeContent.classList.toggle('visible');
-            elements.toggleCodeBtn.textContent = elements.codeContent.classList.contains('visible') 
-                ? 'Hide Code' 
-                : 'Show Code';
-        }
-
-        // ============================================
-        // INITIALISATION
-        // ============================================
-        console.log('🎨 Initializing Insertion Sort Visualizer...');
-        
-        // Vérifier que les éléments sont bien chargés
-        console.log('Elements loaded:');
-        console.log('  arraySize:', elements.arraySize ? '✓' : '✗');
-        console.log('  generateBtn:', elements.generateBtn ? '✓' : '✗');
-        console.log('  startBtn:', elements.startBtn ? '✓' : '✗');
-        console.log('  barsContainer:', elements.barsContainer ? '✓' : '✗');
-        console.log('  codeContent:', elements.codeContent ? '✓' : '✗');
-        
-        initializeCodeDisplay();
-        
-        // Afficher le code source par défaut
-        elements.codeContent.classList.add('visible');
-        elements.toggleCodeBtn.textContent = 'Hide Code';
-        
-        console.log('✓ Insertion Sort Visualizer initialized successfully!');
-    </script>
-</body>
+        </script>
+    </body>
 </html>
