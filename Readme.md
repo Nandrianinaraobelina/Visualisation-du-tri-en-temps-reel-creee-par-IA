@@ -23,8 +23,8 @@ Cette application est idéale pour les étudiants, les débutants en algorithmiq
 ##  Aperçu
 
 <p align="center">
-  <img src="sary-1.png" width="45%">
-  <img src="sary-2.png" width="45%">
+  <img src="sary (1).png" width="45%">
+  <img src="sary (2).png" width="45%">
 </p>
 
 <p align="center">
